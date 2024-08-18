@@ -16,11 +16,11 @@ class MotorStatus(enum.Enum):
    NO_MOTOR_FOUND = 2
 
 
-class Movement(subsystem.Subsystem):
+class Movement(subsystem.Subsystem):#TODO create state machine
    def __init__(self):
       self.kit = ServoKit(channels=16)
       self.motor = self.kit.continuous_servo[0]
-      self.pid = PID(0.0001, 0, 0, setpoint=0)
+      self.pid = PID(0.000001, 0, 0, setpoint=0)
       self.pid.output_limits = (-1, 1)
       self.calibration_status = CalibrationStatus.NOT_CALIBRATED
       self.motor_status = MotorStatus.NOMINAL
@@ -38,7 +38,18 @@ class Movement(subsystem.Subsystem):
 
       return self.pid(measurement)
 
+   def is_at_setpoint(self):
+      return self.errorTolerance(-0.1,self.throttle)
 
+
+   def errorTolerance(self, tolerance: float, value):
+      """
+
+      :param tolerance: negative value
+      :param value:
+      :return:
+      """
+      return tolerance <= value <= tolerance.__abs__()
    def update(self):
       super().update()
 

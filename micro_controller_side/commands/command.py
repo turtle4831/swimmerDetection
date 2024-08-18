@@ -5,3 +5,5 @@ class Command:
    def run(self):
       pass
 
+   def is_finished(self):
+      return True

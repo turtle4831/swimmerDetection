@@ -1,4 +1,4 @@
-from CameraStream.aruco_helper import ArucoHelper
+from micro_controller_side.CameraStream.aruco_helper import ArucoHelper
 
 hp = ArucoHelper()
 for i in range(100):
