@@ -2,6 +2,7 @@ import enum
 from adafruit_servokit import ServoKit
 from simple_pid import PID
 
+from micro_controller_side import status_enum
 from micro_controller_side.Subsystems import subsystem
 from micro_controller_side.status_enum import MechanismStatus
 
@@ -51,9 +52,10 @@ class Movement(subsystem.Subsystem):#TODO create state machine
       """
       return tolerance <= value <= tolerance.__abs__()
    def update(self):
-      super().update()
+      pass
 
    def initialize(self):
-      super().initialize()
+      self.mechanism_state = status_enum.MechanismStatus.CALIBRATING_SYSTEM
+
 
 

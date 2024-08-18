@@ -1,5 +1,7 @@
 from time import sleep
 
+from micro_controller_side import status_enum
+from micro_controller_side.commands.command_types.cancel_command import CancelCommand
 from micro_controller_side.commands.zero_mechanism import ZeroCommand
 from micro_controller_side.Subsystems.arduco_cam import ArducoCam
 from micro_controller_side.Subsystems.movement import Movement
@@ -27,7 +29,9 @@ sleep(5)#allow hardware to be setup
 
 commandScheduler.schedule_command(ZeroCommand(movement,arduco_cam.get_camera()))
 
+movement.set_motor_power(0)
 
+movement.mechanism_state = status_enum.MechanismStatus.ENABLED
 print("waiting for web signal")
 #TODO wait for signal from webapp
 
@@ -35,5 +39,8 @@ while True:#TODO add stop case
 
    commandScheduler.loop()
    for system in subsystems:
+      if system.mechanism_state == status_enum.MechanismStatus.SAFETY_ERROR or status_enum.MechanismStatus.DISABLED:
+         print("DISABLED")
+         commandScheduler.schedule_command(CancelCommand())
       system.update()
 
