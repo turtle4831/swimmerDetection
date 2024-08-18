@@ -35,7 +35,7 @@ class ArucoHelper:
    def get_aruco_info(self,camera_stream: cv2.VideoCapture):
       """
       :param camera_stream: cv2.VideoCapture
-      :return:
+      :return:distance from a tag in cm and a tuple full of corners objects incase you wanna use that for some reason
       """
       ret, frame = camera_stream.read()
       gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -47,9 +47,7 @@ class ArucoHelper:
          )
          total_markers = range(0, marker_IDs.size)
          for ids, corners, i in zip(marker_IDs, marker_corners, total_markers):
-            cv2.polylines(
-               frame, [corners.astype(np.int32)], True, (0, 255, 255), 4, cv2.LINE_AA
-            )
+
             corners = corners.reshape(4, 2)
             corners = corners.astype(int)
             top_right = corners[0].ravel()
@@ -60,7 +58,7 @@ class ArucoHelper:
             # Calculating the distance in cm
             return  np.sqrt(
                tVec[i][0][2] ** 2 + tVec[i][0][0] ** 2 + tVec[i][0][1] ** 2
-            )
+            ), (top_left,top_right,bottom_left,bottom_right)
 
    def my_estimatePoseSingleMarkers(self,corners, marker_size, mtx, distortion):
       '''
